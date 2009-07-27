@@ -3,6 +3,28 @@ use Moose;
 use Set::Object;
 with 'NetHack::ItemPool::Role::HasPool';
 
+# A Tracker represents a set of items that NHI can prove are the same type.
+# This proof can be done in three ways; by identifying them and seeing them
+# with the same identity, by generic #naming one and seeing the name on the
+# other, or by seeing that they have the same appearance which is not a
+# generic appearance (gray stone, lamp, whistle, runed broadsword, conical
+# hat, bag, horn, flute, drum, harp, Amulet of Yendor, egg, tin, more if
+# blind).
+#
+# Since we only use sharing to propagate knowledge, it's not neccessary to
+# share trackers with only one possibility, this allows some simplification
+# by not actually implementing the same-identity share.
+#
+# When an object is created, it receives an unshared tracker with the
+# information from the object; when the object's appearance, identity, or
+# generic_name are set, the information goes to the tracker.  When a tracker
+# sees appearance or generic_name, it contacts the Trackers meta-object in
+# the pool, which returns the canonical tracker for that, and merges with it.
+#
+# As an optimization, if we know the appearance or name of an object when it
+# is created, it is directly connected to the canonical tracker and no
+# unshared tracker is generated.
+
 use Module::Pluggable (
     search_path => __PACKAGE__,
     require     => 1,
