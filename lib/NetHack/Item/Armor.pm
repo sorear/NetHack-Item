@@ -14,11 +14,18 @@ sub specific_slots { [shift->subtype] }
 
 sub ac {
     my $self = shift;
-    my $base = $self->base_ac;
-    return $base unless defined($base) && $self->enchantment_known;
+    my $ac = $self->base_ac;
+    return undef unless defined($ac);
 
-    my $enchantment = $self->enchantment;
-    return $base + $enchantment;
+    $ac -= $self->damaged;
+
+    if ($ac < 0) { $ac = 0; }
+
+    if ($self->enchantment_known) {
+        $ac += $self->numeric_enchantment;
+    }
+
+    return $ac;
 }
 
 my %metals = map {$_ => 1} qw/metal iron mithril copper silver gold platinum/;

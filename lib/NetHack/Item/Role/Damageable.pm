@@ -1,11 +1,18 @@
 package NetHack::Item::Role::Damageable;
 use Moose::Role;
+use List::Util qw(max);
 
 has [qw/burnt corroded rotted rusty/]=> (
     is      => 'rw',
     isa     => 'Int',
     default => 0,
 );
+
+sub damaged {
+    my $self = shift;
+
+    return max($self->burnt, $self->corroded, $self->rotted, $self->rusty);
+}
 
 has proofed => (
     traits    => [qw/Bool IncorporatesUndef/],
