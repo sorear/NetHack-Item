@@ -40,6 +40,12 @@ sub remove_damage {
     $self->$_(0) for qw/burnt corroded rotted rusty/;
 }
 
+sub greatest_erosion {
+    my $self = shift;
+
+    return max map { $self->$_ } qw/burnt corroded rotted rusty/;
+}
+
 no Moose::Role;
 
 1;

@@ -188,6 +188,18 @@ sub possibilities_for_appearance {
 
     return $possibilities;
 }
+
+# A generic appearance does not link items; two gray stones might not
+# be the same
+sub is_generic_appearance {
+    my $self = shift;
+    my $appearance = shift;
+
+    my $possibilities = $self->possibilities_for_appearance($appearance)
+        or return;
+
+    return (@$possibilities > 1) && defined $possibilities->[0]->{appearance};
+}
 # }}}
 # singularize and pluralize {{{
 sub plurals {
